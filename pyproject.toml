@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "catalogo-estampas-2"
-version = "2.0.0.dev2"
+version = "2.0.0.dev4"
 description = "Catálogo de Estampas 2.0 — cliente Windows e servidor central"
 readme = "README.md"
 requires-python = ">=3.13,<3.14"

@@ -1,33 +1,22 @@
 # Catálogo de Estampas 2.0
 
-Cliente Windows PySide6 e servidor central FastAPI, projeto independente do catálogo anterior.
-Python 3.13 (64 bits). **Estado: Módulo 01 · Etapa 01 · Entrega 03 — aguardando testes e homologação.**
+Aplicação Windows com cliente PySide6, servidor FastAPI e SQLite centralizado. Python 3.13.
 
-## Início rápido
+**Módulo 01 — Etapa 02: implementação entregue para testes, aguardando homologação.**
 
-Use a pasta de projeto existente, com `.venv` já preparado na Entrega 02. Em dois terminais PowerShell separados, com o ambiente virtual ativo:
-
-```powershell
-python server_main.py
-```
+## Execução no Windows
 
 ```powershell
-python main.py
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe server_main.py
 ```
 
-O cliente verifica `http://127.0.0.1:8765/health`, mostra a conexão e permite nova tentativa. O servidor deve ser iniciado manualmente. A conexão é **apenas local** e não inclui autenticação nem acesso ao catálogo.
-
-## Verificações
+Em outro terminal:
 
 ```powershell
-python -m pytest -q
-python -m compileall -q app config main.py server_main.py
+.\.venv\Scripts\python.exe main.py
 ```
 
-## Documentação
+O banco é criado automaticamente em `%LOCALAPPDATA%\CatalogoEstampas2\catalogo.sqlite3` na primeira inicialização do servidor. O servidor permanece restrito a `127.0.0.1:8765`.
 
-- `docs/ENTREGA_02.md`: dependências e ambiente.
-- `docs/ENTREGA_03.md`: instruções, testes e limites da entrega.
-- `docs/DECISOES.md`: decisões técnicas resumidas.
-
-**Nunca incluir `.venv`, credenciais, banco de dados ou arquivos privados no Git ou no ZIP de entrega.**
+Leia `docs/ETAPA_02_SQLITE.md` para esquema, testes, limites de segurança e cuidados com backups. Não inclua `.venv`, bancos, credenciais ou arquivos privados no Git.

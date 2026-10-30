@@ -46,3 +46,7 @@ backups/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Pacotes de entrega locais
+Catalogo2_*.zip
+CatalogoEstampas2_*.zip
