@@ -1,57 +1,33 @@
 # Catálogo de Estampas 2.0
 
-Projeto novo, independente do catálogo anterior, com cliente Windows portátil
-e servidor central. Desenvolvimento em Python 3.13 (64 bits), sujeito a
-validação de compatibilidade.
+Cliente Windows PySide6 e servidor central FastAPI, projeto independente do catálogo anterior.
+Python 3.13 (64 bits). **Estado: Módulo 01 · Etapa 01 · Entrega 03 — aguardando testes e homologação.**
 
-## Estado atual — Módulo 01, Etapa 01, Bloco 01, Entrega 01
+## Início rápido
 
-Esta entrega contém **somente a estrutura e os arquivos-base**.
-Os pontos de entrada exibem mensagens informativas; não iniciam uma interface
-gráfica, uma API ou um banco de dados. Isso será feito em entregas posteriores.
-
-## Estrutura
-
-- `main.py`: ponto de entrada reservado ao cliente.
-- `server_main.py`: ponto de entrada reservado ao servidor.
-- `app/client/`: código do cliente (PySide6 em etapa posterior).
-- `app/server/`: código do servidor (FastAPI em etapa posterior).
-- `app/shared/`: contratos e recursos neutros compartilhados.
-- `config/`: código de configuração, sem segredos reais.
-- `tests/`: testes automatizados futuros.
-- `docs/`: documentação técnica.
-- `pyproject.toml`: metadados; dependências serão adicionadas na Entrega 02.
-
-## Instalação dos arquivos
-
-1. Escolha uma pasta vazia para o projeto, conforme o planejamento:
-   `C:\Projetos\CatalogoEstampas2`.
-2. Extraia o conteúdo do ZIP preservando a estrutura.
-3. Se já houver arquivos no destino, **não sobrescreva** antes de conferi-los.
-4. Não instale dependências nesta entrega.
-
-## Verificação básica (opcional)
-
-Com Python 3.13 disponível, na pasta do projeto:
+Use a pasta de projeto existente, com `.venv` já preparado na Entrega 02. Em dois terminais PowerShell separados, com o ambiente virtual ativo:
 
 ```powershell
-python main.py
 python server_main.py
 ```
 
-Ambos devem exibir uma mensagem informando que sua inicialização funcional
-será implementada na Entrega 03. Nenhum serviço será aberto.
+```powershell
+python main.py
+```
 
-## Próximas entregas
+O cliente verifica `http://127.0.0.1:8765/health`, mostra a conexão e permite nova tentativa. O servidor deve ser iniciado manualmente. A conexão é **apenas local** e não inclui autenticação nem acesso ao catálogo.
 
-- Entrega 02: ambiente virtual e dependências.
-- Entrega 03: inicialização mínima PySide6/FastAPI e configurações.
-- Entrega 04: testes e validação integrados.
+## Verificações
 
-**Não incluir bancos de dados reais, certificados privados ou senhas no Git.**
+```powershell
+python -m pytest -q
+python -m compileall -q app config main.py server_main.py
+```
 
-## Entrega 02 — Dependências e ambiente (em validação)
+## Documentação
 
-O Python 3.13 e a pasta `.venv` são locais e não fazem parte do ZIP.
-Veja `docs/ENTREGA_02.md` para instalação, verificações e congelamento de versões.
-A inicialização da interface e da API permanece reservada à Entrega 03.
+- `docs/ENTREGA_02.md`: dependências e ambiente.
+- `docs/ENTREGA_03.md`: instruções, testes e limites da entrega.
+- `docs/DECISOES.md`: decisões técnicas resumidas.
+
+**Nunca incluir `.venv`, credenciais, banco de dados ou arquivos privados no Git ou no ZIP de entrega.**

@@ -1,11 +1,5 @@
-"""Ponto de entrada reservado ao cliente do Catálogo de Estampas 2.0.
-
-A inicialização PySide6 será implementada na Entrega 03.
-"""
-
-def main() -> int:
-    print("Catálogo de Estampas 2.0 — cliente ainda não implementado (Entrega 03).")
-    return 0
+"""Ponto de entrada do cliente gráfico do Catálogo de Estampas 2.0."""
+from app.client.application import main
 
 
 if __name__ == "__main__":
