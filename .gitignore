@@ -1,0 +1,48 @@
+# Python e ambiente virtual
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+*.spec
+
+# Configurações locais e segredos
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+config/local.*
+config/private.*
+
+# Bancos e arquivos auxiliares
+*.sqlite
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+*.db
+*.db-shm
+*.db-wal
+
+# Dados operacionais
+logs/
+cache/
+tmp/
+temp/
+backups/
+*.log
+
+# IDE e sistema operacional
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini
+.DS_Store

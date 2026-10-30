@@ -1,0 +1,17 @@
+# Entrega 01: somente metadados. Dependências serão definidas na Entrega 02.
+[project]
+name = "catalogo-estampas-2"
+version = "2.0.0.dev1"
+description = "Catálogo de Estampas 2.0 — cliente Windows e servidor central"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = []
+
+[project.optional-dependencies]
+client = []
+server = []
+dev = []
+distribution = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
