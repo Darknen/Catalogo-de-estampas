@@ -49,3 +49,9 @@ será implementada na Entrega 03. Nenhum serviço será aberto.
 - Entrega 04: testes e validação integrados.
 
 **Não incluir bancos de dados reais, certificados privados ou senhas no Git.**
+
+## Entrega 02 — Dependências e ambiente (em validação)
+
+O Python 3.13 e a pasta `.venv` são locais e não fazem parte do ZIP.
+Veja `docs/ENTREGA_02.md` para instalação, verificações e congelamento de versões.
+A inicialização da interface e da API permanece reservada à Entrega 03.

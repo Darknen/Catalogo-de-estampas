@@ -1,17 +1,36 @@
-# Entrega 01: somente metadados. Dependências serão definidas na Entrega 02.
+# Entrega 02: dependencias separadas por funcao.
+# Instalar no ambiente virtual Python 3.13.
+[build-system]
+requires = ["setuptools>=75,<82"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "catalogo-estampas-2"
-version = "2.0.0.dev1"
+version = "2.0.0.dev2"
 description = "Catálogo de Estampas 2.0 — cliente Windows e servidor central"
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = []
 
 [project.optional-dependencies]
-client = []
-server = []
-dev = []
-distribution = []
+client = [
+    "PySide6>=6.8,<7",
+    "httpx>=0.28,<1",
+]
+server = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.34,<1",
+    "pydantic>=2.10,<3",
+]
+dev = [
+    "pytest>=8.3,<10",
+]
+distribution = [
+    "pyinstaller>=6.11,<7",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*", "config*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
