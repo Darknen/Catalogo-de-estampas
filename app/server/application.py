@@ -21,6 +21,10 @@ def create_app(database: Database | None = None) -> FastAPI:
     def health() -> dict[str,str]:
         return {'status':'online','api_version':API_VERSION}
 
+    @app.get('/dashboard/stats', tags=['diagnostics'])
+    def dashboard_stats() -> dict[str, int]:
+        return db.dashboard_stats()
+
     @app.get('/info', tags=['diagnostics'])
     def info() -> dict[str,str|int]:
         return {'name':APP_NAME,'app_version':APP_VERSION,'api_version':API_VERSION,

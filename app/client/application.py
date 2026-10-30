@@ -46,7 +46,7 @@ QLabel#statusBad {color:#B9414E;font-weight:700;}
 
 
 class ConnectionWorker(QObject):
-    finished = Signal(bool, str)
+    finished = Signal(bool, str, object)
 
     @Slot()
     def check(self) -> None:
@@ -56,13 +56,20 @@ class ConnectionWorker(QObject):
                 response.raise_for_status()
                 payload = response.json()
             if payload.get('status') != 'online':
-                self.finished.emit(False, 'Resposta inesperada do servidor')
+                self.finished.emit(False, 'Resposta inesperada do servidor', None)
             elif payload.get('api_version') != API_VERSION:
-                self.finished.emit(False, 'Versão da API incompatível')
+                self.finished.emit(False, 'Versão da API incompatível', None)
             else:
-                self.finished.emit(True, 'Servidor conectado')
+                with httpx.Client(timeout=settings.timeout_seconds, trust_env=False) as client:
+                    stats_response = client.get(f'{settings.base_url}/dashboard/stats')
+                    stats_response.raise_for_status()
+                    stats = stats_response.json()
+                required = ('artworks', 'themes', 'storage_units', 'recent_operations')
+                if not isinstance(stats, dict) or any(type(stats.get(k)) is not int or stats[k] < 0 for k in required):
+                    raise ValueError('Indicadores inválidos recebidos do servidor')
+                self.finished.emit(True, 'Servidor conectado; indicadores atualizados', stats)
         except (httpx.HTTPError, ValueError, TypeError) as exc:
-            self.finished.emit(False, f'Servidor indisponível: {exc}')
+            self.finished.emit(False, f'Servidor indisponível: {exc}', None)
 
 
 def make_label(text: str, object_name: str = '', wrap: bool = False) -> QLabel:
@@ -89,6 +96,8 @@ class MainWindow(QMainWindow):
         self._connected = False
         self._current_page = 0
         self._nav_buttons: list[QPushButton] = []
+        self._metric_labels: dict[str, QLabel] = {}
+        self._metric_notes: dict[str, QLabel] = {}
         self._build_ui()
         self.setStyleSheet(LIGHT)
         self._select_page(0)
@@ -181,7 +190,7 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(self.stack, 1)
         outer.addWidget(main, 1)
 
-    def _card(self, title: str, value: str, note: str) -> QFrame:
+    def _card(self, key: str, title: str, value: str, note: str) -> QFrame:
         card = QFrame()
         card.setObjectName('card')
         card.setMinimumHeight(136)
@@ -189,8 +198,12 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(20, 17, 20, 17)
         layout.setSpacing(8)
         layout.addWidget(make_label(title, 'cardTitle'))
-        layout.addWidget(make_label(value, 'cardValue'))
-        layout.addWidget(make_label(note, 'muted'))
+        value_label = make_label(value, 'cardValue')
+        note_label = make_label(note, 'muted')
+        self._metric_labels[key] = value_label
+        self._metric_notes[key] = note_label
+        layout.addWidget(value_label)
+        layout.addWidget(note_label)
         return card
 
     def _dashboard(self) -> QWidget:
@@ -202,14 +215,14 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(30, 30, 30, 30)
         layout.setSpacing(20)
         layout.addWidget(make_label('Bem-vindo ao seu catálogo', 'title'))
-        layout.addWidget(make_label('Seu espaço de organização de estampas está sendo preparado.', 'subtitle'))
+        layout.addWidget(make_label('Acompanhe os indicadores reais do seu catálogo.', 'subtitle'))
         grid = QGridLayout()
         grid.setSpacing(16)
         for index, args in enumerate([
-            ('Artes cadastradas', '—', 'Indicador disponível futuramente'),
-            ('Temas organizados', '—', 'Indicador disponível futuramente'),
-            ('Unidades conectadas', '—', 'Indicador disponível futuramente'),
-            ('Operações recentes', '—', 'Indicador disponível futuramente'),
+            ('artworks', 'Artes cadastradas', '—', 'Aguardando atualização'),
+            ('themes', 'Temas organizados', '—', 'Aguardando atualização'),
+            ('storage_units', 'Unidades disponíveis', '—', 'Unidades marcadas disponíveis no cadastro'),
+            ('recent_operations', 'Operações recentes', '—', 'Operações registradas nos últimos 7 dias'),
         ]):
             grid.addWidget(self._card(*args), index // 2, index % 2)
         layout.addLayout(grid)
@@ -284,14 +297,23 @@ class MainWindow(QMainWindow):
         self._thread, self._worker = thread, worker
         thread.start()
 
-    @Slot(bool, str)
-    def _on_result(self, connected: bool, message: str) -> None:
+    @Slot(bool, str, object)
+    def _on_result(self, connected: bool, message: str, stats: object) -> None:
         self._connected = connected
         self.connection_status.setText('● Conectado' if connected else '● Desconectado')
         self.connection_status.setObjectName('statusOk' if connected else 'statusBad')
         self.connection_status.style().unpolish(self.connection_status)
         self.connection_status.style().polish(self.connection_status)
         self.status.setText(message + (' — Autenticação será implementada em etapa futura.' if connected else ''))
+        if connected and isinstance(stats, dict):
+            for key, label in self._metric_labels.items():
+                label.setText(str(stats[key]))
+                if key in ('artworks', 'themes'):
+                    self._metric_notes[key].setText('Dados reais do banco SQLite')
+        elif not connected:
+            for key, label in self._metric_labels.items():
+                label.setText('—')
+                self._metric_notes[key].setText('Sem dados: servidor indisponível')
         self.retry.setEnabled(True)
 
     @Slot()

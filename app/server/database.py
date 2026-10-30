@@ -135,3 +135,14 @@ class Database:
   with self.transaction() as con:
    cur=con.execute("UPDATE artworks SET title=?,revision=revision+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND revision=?",(title,artwork_id,revision))
    return cur.rowcount==1
+
+
+ def dashboard_stats(self) -> dict[str,int]:
+  """Consultas agregadas somente leitura, executadas pelo servidor."""
+  with self.connect() as con:
+   return {
+    'artworks': int(con.execute('SELECT COUNT(*) FROM artworks').fetchone()[0]),
+    'themes': int(con.execute('SELECT COUNT(*) FROM themes').fetchone()[0]),
+    'storage_units': int(con.execute('SELECT COUNT(*) FROM storage_units WHERE available=1').fetchone()[0]),
+    'recent_operations': int(con.execute("SELECT COUNT(*) FROM file_operations WHERE created_at >= datetime('now','-7 days')").fetchone()[0]),
+   }

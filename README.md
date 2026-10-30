@@ -24,3 +24,7 @@ Leia `docs/ETAPA_02_SQLITE.md` para esquema, testes, limites de segurança e cui
 ## Interface principal
 
 Janela com identidade visual, logotipo, menu lateral recolhível, sete telas, painel inicial e indicador de conexão. A navegação é funcional; cadastro, galeria operacional e permissões serão implementados nas etapas correspondentes. Consulte `docs/ETAPA_03_INTERFACE.md`.
+
+
+## Etapa 04
+Consulte `docs/ETAPA_04_INTEGRACAO.md` para integração real do dashboard.
